@@ -4,8 +4,8 @@ using System.Collections;
 public class PlayerCombat : MonoBehaviour
 {
    public GameObject opponent;
-   public AnimationClip attack;
-   public AnimationClip die;
+   public AnimationClip attackClip;
+   public AnimationClip dieClip;
    public int damage;
 
    public float hitTime;
@@ -22,18 +22,29 @@ public class PlayerCombat : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
    {
+       if(!isDead())
+      {
+         attack();        
+      }
+      else
+         dieMethod();
+   }
+
+     void attack()
+   {
       if(Input.GetKey(KeyCode.Space) && inRange() && !isDead())
       {
-         GetComponent<Animation>().Play(attack.name);
-         ClickToMove.attack = true;
          if(opponent != null && opponent.name != "Player")
          {         
             transform.LookAt(opponent.transform);
          }
-      }
 
-      float animationTime = GetComponent<Animation>()[attack.name].time;
-      float animationLength = GetComponent<Animation>()[attack.name].length;
+         GetComponent<Animation>().Play(attackClip.name);
+         ClickToMove.attack = true;
+      }     
+
+      float animationTime = GetComponent<Animation>()[attackClip.name].time;
+      float animationLength = GetComponent<Animation>()[attackClip.name].length;
       if(animationTime > 0.9*animationLength)
 
       {
@@ -42,17 +53,15 @@ public class PlayerCombat : MonoBehaviour
       }
 
       impact();
-      if(isDead())
-         dieMethod();
    }
 
    void impact()
    {
 
-      if(opponent != null && GetComponent<Animation>().IsPlaying(attack.name) && !hit)
+      if(opponent != null && GetComponent<Animation>().IsPlaying(attackClip.name) && !hit)
       {
-         float animationTime = GetComponent<Animation>()[attack.name].time;
-         float animationLength = GetComponent<Animation>()[attack.name].length;
+         float animationTime = GetComponent<Animation>()[attackClip.name].time;
+         float animationLength = GetComponent<Animation>()[attackClip.name].length;
 
          if(animationTime > hitTime && (animationTime < 0.9*animationLength))
          {            
@@ -83,9 +92,9 @@ public class PlayerCombat : MonoBehaviour
    void dieMethod()
    {
 
-      GetComponent<Animation>().CrossFade(die.name);
+      GetComponent<Animation>().CrossFade(dieClip.name);
 
-      if(GetComponent<Animation>()[die.name].time > (float)GetComponent<Animation>()[die.name].length*0.9)
+      if(GetComponent<Animation>()[dieClip.name].time > (float)GetComponent<Animation>()[dieClip.name].length*0.9)
       {
          Destroy(gameObject);
       }
