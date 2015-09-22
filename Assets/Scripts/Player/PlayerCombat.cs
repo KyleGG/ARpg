@@ -24,7 +24,7 @@ public class PlayerCombat : MonoBehaviour
    {
        if(!isDead())
       {
-         attack();        
+         attack();
       }
       else
          dieMethod();
