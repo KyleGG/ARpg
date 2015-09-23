@@ -21,7 +21,7 @@ public class SkeletonMob : MonoBehaviour {
    public bool hit;
 
 	// Use this for initialization
-	void Start()
+	void Start ()
    {
 	   health = 100;
       opponent = player.GetComponent<PlayerCombat>();
@@ -34,7 +34,7 @@ public class SkeletonMob : MonoBehaviour {
       {
          if(!inRange())
             chase();
-         else
+         else if(!opponent.isDead())
          {
             attack();            
          }
@@ -56,7 +56,7 @@ public class SkeletonMob : MonoBehaviour {
 
    bool inRange()
    {
-      return Vector3.Distance(transform.position, player.position) < range;
+      return Vector3.Distance(transform.position, player.position) <= range;
    }
 
    public void getHit(int damage)
