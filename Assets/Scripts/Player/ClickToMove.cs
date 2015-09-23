@@ -13,16 +13,19 @@ public class ClickToMove : MonoBehaviour
    public AnimationClip run;
    public AnimationClip idle;
    public static bool attack;
+   public static bool hasDied;
+
    //Called on object creation
    void Start()
    {
       position = transform.position;
+  
    }
 
    //Called every frame
    void Update()
    {
-      if(!attack)
+      if(!attack && !hasDied)
       {
          // Check for left click
          if(Input.GetMouseButton(0))

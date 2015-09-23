@@ -12,11 +12,15 @@ public class PlayerCombat : MonoBehaviour
    public bool hit;
    public float range;
    public int health;
+   public float reviveModifier;
+   private int startHealth;
+   private bool hasDied;
 
 	// Use this for initialization
 	void Start ()
    {
-	
+      ClickToMove.hasDied = false;
+      startHealth = health;
 	}
 	
 	// Update is called once per frame
@@ -32,7 +36,7 @@ public class PlayerCombat : MonoBehaviour
 
      void attack()
    {
-      if(Input.GetKey(KeyCode.Space) && inRange() && !isDead())
+      if(Input.GetKey(KeyCode.Space) && !isDead() && inRange() && !ClickToMove.hasDied)
       {
          if(opponent != null && opponent.name != "Player")
          {         
@@ -58,7 +62,7 @@ public class PlayerCombat : MonoBehaviour
    void impact()
    {
 
-      if(opponent != null && GetComponent<Animation>().IsPlaying(attackClip.name) && !hit)
+      if(opponent != null && GetComponent<Animation>().IsPlaying(attackClip.name) && !hit  )
       {
          float animationTime = GetComponent<Animation>()[attackClip.name].time;
          float animationLength = GetComponent<Animation>()[attackClip.name].length;
@@ -87,16 +91,21 @@ public class PlayerCombat : MonoBehaviour
 
    public bool isDead()
    {
-      return (health <= 0);
+      if(health<=0)
+         ClickToMove.hasDied = true;
+      return health <= 0;
    }
+
    void dieMethod()
    {
-
-      GetComponent<Animation>().CrossFade(dieClip.name);
+      if(isDead())
+         GetComponent<Animation>().Play(dieClip.name);         
 
       if(GetComponent<Animation>()[dieClip.name].time > (float)GetComponent<Animation>()[dieClip.name].length*0.9)
       {
-         Destroy(gameObject);
+         ClickToMove.hasDied = false;
+         health = (int)(startHealth*reviveModifier);
+
       }
    }
 }
